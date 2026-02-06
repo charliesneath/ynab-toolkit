@@ -1,6 +1,6 @@
-# YNAB Amazon Itemizer
+# YNAB Toolkit
 
-Categorize and itemize Amazon orders in YNAB using Claude AI. Two modes:
+Tools for automating YNAB workflows: AI categorization, Amazon order itemization, statement parsing, and reconciliation.
 
 ## Documentation Guidelines
 

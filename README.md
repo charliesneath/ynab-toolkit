@@ -1,6 +1,6 @@
-# YNAB Amazon Itemizer
+# YNAB Toolkit
 
-Automatically categorize and itemize Amazon orders in [YNAB](https://www.ynab.com/) using AI.
+A collection of tools for automating [YNAB](https://www.ynab.com/) workflows, including AI-powered categorization, Amazon order itemization, statement parsing, and reconciliation.
 
 ## What is YNAB?
 
@@ -442,7 +442,7 @@ Items are categorized into:
 ## File Structure
 
 ```
-ynab-amazon-itemize/
+ynab-toolkit/
 ├── main.py                   # Cloud Function (automated solution)
 ├── email_parser.py           # Amazon email parsing with Claude
 ├── email_fetcher.py          # Gmail API integration
