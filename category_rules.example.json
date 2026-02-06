@@ -1,0 +1,52 @@
+{
+  "_comment": "Copy this file to category_rules.json and customize for your YNAB categories",
+  "fallback_category": "Uncategorized",
+  "excluded_groups": [
+    "Hidden Categories",
+    "Internal Master Category"
+  ],
+  "categories": {
+    "Groceries": {
+      "description": "General grocery items",
+      "examples": ["food", "produce", "dairy", "meat"],
+      "brands": [],
+      "not_this": {}
+    },
+    "Household": {
+      "description": "Household supplies and cleaning products",
+      "examples": ["cleaning supplies", "paper towels", "trash bags"],
+      "brands": ["Bounty", "Glad"],
+      "not_this": {}
+    },
+    "Electronics": {
+      "description": "Electronic devices and accessories",
+      "examples": ["cables", "chargers", "phone cases", "headphones"],
+      "brands": ["Anker", "Amazon"],
+      "not_this": {}
+    },
+    "Books": {
+      "description": "Books and reading materials",
+      "examples": ["novels", "textbooks", "cookbooks"],
+      "brands": [],
+      "not_this": {}
+    },
+    "Clothing": {
+      "description": "Apparel and accessories",
+      "examples": ["shirts", "pants", "shoes", "socks"],
+      "brands": [],
+      "not_this": {}
+    },
+    "Kids": {
+      "description": "Children's items including toys and supplies",
+      "examples": ["toys", "diapers", "baby food", "kids clothes"],
+      "brands": ["Fisher-Price", "Huggies"],
+      "not_this": {}
+    },
+    "Personal Care": {
+      "description": "Health and beauty products",
+      "examples": ["shampoo", "toothpaste", "vitamins", "lotion"],
+      "brands": [],
+      "not_this": {}
+    }
+  }
+}

@@ -1,0 +1,20 @@
+.env
+.env~
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.csv
+data/
+.DS_Store
+data/category_descriptions.csv
+legacy/
+
+# Personal category rules (copy from category_rules.example.json)
+category_rules.json
+
+# Private configuration (copy from config_private.example.py)
+config_private.py
+
+# Local Claude settings (contains permission patterns)
+.claude/settings.local.json
