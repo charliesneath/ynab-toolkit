@@ -1363,6 +1363,219 @@ def process_gmail_push(cloud_event: CloudEvent) -> None:
         print(f"Processed email: {result}")
 
 
+# OAuth configuration
+OAUTH_SCOPES = [
+    "https://www.googleapis.com/auth/gmail.readonly",
+    "https://www.googleapis.com/auth/gmail.send",
+]
+OAUTH_REDIRECT_PATH = "/oauth_callback"
+
+
+def get_oauth_credentials():
+    """Get OAuth client credentials from Secret Manager."""
+    try:
+        creds_json = get_secret("gmail-oauth-credentials")
+        creds = json.loads(creds_json)
+        return creds.get("client_id"), creds.get("client_secret")
+    except Exception as e:
+        print(f"Error getting OAuth credentials: {e}")
+        return None, None
+
+
+@functions_framework.http
+def oauth_start(request):
+    """
+    Start the OAuth flow by redirecting to Google's authorization page.
+    """
+    from urllib.parse import urlencode
+    import secrets
+
+    client_id, _ = get_oauth_credentials()
+    if not client_id:
+        return {"error": "OAuth not configured"}, 500
+
+    # Build the redirect URI (this function's URL with callback path)
+    # Get the host from the request or use configured value
+    project_id = os.getenv("GCP_PROJECT_ID")
+    region = os.getenv("FUNCTION_REGION", "us-central1")
+    redirect_uri = f"https://{region}-{project_id}.cloudfunctions.net/oauth_callback"
+
+    # Generate state for CSRF protection
+    state = secrets.token_urlsafe(32)
+
+    # Store state in Firestore for validation (expires in 10 minutes)
+    try:
+        from google.cloud import firestore
+        db = firestore.Client(project=project_id)
+        db.collection("oauth_states").document(state).set({
+            "created": datetime.now().isoformat(),
+            "valid": True,
+        })
+    except Exception as e:
+        print(f"Error storing OAuth state: {e}")
+
+    # Build authorization URL
+    auth_params = {
+        "client_id": client_id,
+        "redirect_uri": redirect_uri,
+        "response_type": "code",
+        "scope": " ".join(OAUTH_SCOPES),
+        "access_type": "offline",  # Get refresh token
+        "prompt": "consent",  # Always show consent to get refresh token
+        "state": state,
+    }
+
+    auth_url = f"https://accounts.google.com/o/oauth2/v2/auth?{urlencode(auth_params)}"
+
+    # Redirect to Google
+    return "", 302, {"Location": auth_url}
+
+
+@functions_framework.http
+def oauth_callback(request):
+    """
+    Handle OAuth callback from Google.
+    Exchanges authorization code for tokens and stores them.
+    """
+    import requests as http_requests
+
+    # Check for errors
+    error = request.args.get("error")
+    if error:
+        return f"""
+        <html><body>
+        <h1>Authorization Failed</h1>
+        <p>Error: {error}</p>
+        <p><a href="https://charliesneath.github.io/ynab-toolkit/">Return to YNAB Toolkit</a></p>
+        </body></html>
+        """, 400
+
+    code = request.args.get("code")
+    state = request.args.get("state")
+
+    if not code:
+        return {"error": "No authorization code received"}, 400
+
+    # Validate state (CSRF protection)
+    project_id = os.getenv("GCP_PROJECT_ID")
+    try:
+        from google.cloud import firestore
+        db = firestore.Client(project=project_id)
+        state_doc = db.collection("oauth_states").document(state).get()
+        if not state_doc.exists or not state_doc.to_dict().get("valid"):
+            return {"error": "Invalid state parameter"}, 400
+        # Invalidate the state
+        db.collection("oauth_states").document(state).delete()
+    except Exception as e:
+        print(f"Error validating state: {e}")
+        # Continue anyway for now - state validation is defense in depth
+
+    # Get OAuth credentials
+    client_id, client_secret = get_oauth_credentials()
+    if not client_id or not client_secret:
+        return {"error": "OAuth not configured"}, 500
+
+    # Build redirect URI (must match exactly)
+    region = os.getenv("FUNCTION_REGION", "us-central1")
+    redirect_uri = f"https://{region}-{project_id}.cloudfunctions.net/oauth_callback"
+
+    # Exchange code for tokens
+    token_response = http_requests.post(
+        "https://oauth2.googleapis.com/token",
+        data={
+            "client_id": client_id,
+            "client_secret": client_secret,
+            "code": code,
+            "grant_type": "authorization_code",
+            "redirect_uri": redirect_uri,
+        },
+    )
+
+    if token_response.status_code != 200:
+        print(f"Token exchange failed: {token_response.text}")
+        return f"""
+        <html><body>
+        <h1>Authorization Failed</h1>
+        <p>Could not exchange authorization code for tokens.</p>
+        <p><a href="https://charliesneath.github.io/ynab-toolkit/">Return to YNAB Toolkit</a></p>
+        </body></html>
+        """, 400
+
+    tokens = token_response.json()
+
+    # Build the token object matching the expected format
+    token_data = {
+        "token": tokens.get("access_token"),
+        "refresh_token": tokens.get("refresh_token"),
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "client_id": client_id,
+        "client_secret": client_secret,
+        "scopes": OAUTH_SCOPES,
+    }
+
+    # Store in Secret Manager (update existing secret)
+    try:
+        from google.cloud import secretmanager
+        client = secretmanager.SecretManagerServiceClient()
+        parent = f"projects/{project_id}/secrets/gmail-oauth-token"
+
+        # Add new version
+        client.add_secret_version(
+            request={
+                "parent": parent,
+                "payload": {"data": json.dumps(token_data).encode("UTF-8")},
+            }
+        )
+        print("Stored new OAuth token in Secret Manager")
+
+        # Clear the cached token so next request uses new one
+        global _gmail_service, _secrets_cache
+        _gmail_service = None
+        if "gmail-oauth-token" in _secrets_cache:
+            del _secrets_cache["gmail-oauth-token"]
+
+    except Exception as e:
+        print(f"Error storing token: {e}")
+        return f"""
+        <html><body>
+        <h1>Authorization Succeeded, but Token Storage Failed</h1>
+        <p>Error: {e}</p>
+        <p>Please try again or contact support.</p>
+        </body></html>
+        """, 500
+
+    # Set up Gmail watch
+    try:
+        gmail_service = get_gmail_service()
+        from api_writer import setup_gmail_watch
+        response = setup_gmail_watch(gmail_service, project_id, "amazon-receipts")
+        save_watch_expiration(int(response.get("expiration", 0)))
+        watch_status = "Gmail notifications enabled!"
+    except Exception as e:
+        print(f"Error setting up Gmail watch: {e}")
+        watch_status = f"Warning: Could not set up Gmail notifications: {e}"
+
+    return f"""
+    <html>
+    <head>
+        <title>Connected - YNAB Toolkit</title>
+        <style>
+            body {{ font-family: -apple-system, system-ui, sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; }}
+            .success {{ color: #059669; }}
+            .warning {{ color: #d97706; }}
+            a {{ color: #2563eb; }}
+        </style>
+    </head>
+    <body>
+        <h1 class="success">Gmail Connected Successfully!</h1>
+        <p>{watch_status}</p>
+        <p>Your Amazon order emails will now be automatically categorized in YNAB.</p>
+        <p><a href="https://charliesneath.github.io/ynab-toolkit/">Return to YNAB Toolkit</a></p>
+    </body>
+    </html>
+    """, 200
+
+
 @functions_framework.http
 def renew_gmail_watch(request):
     """

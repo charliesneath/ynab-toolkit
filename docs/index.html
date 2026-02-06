@@ -148,6 +148,43 @@
             font-size: 0.95rem;
         }
 
+        .connect {
+            padding: 64px 0;
+            text-align: center;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+        }
+
+        .connect h2 {
+            font-size: 2rem;
+            margin-bottom: 16px;
+        }
+
+        .connect > .container > p {
+            margin-bottom: 24px;
+            opacity: 0.9;
+        }
+
+        .connect .btn-large {
+            padding: 16px 32px;
+            font-size: 1.1rem;
+        }
+
+        .connect .btn-primary {
+            background: white;
+            color: var(--primary);
+        }
+
+        .connect .btn-primary:hover {
+            background: var(--gray-100);
+        }
+
+        .connect .note {
+            margin-top: 16px;
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
         .workflow {
             padding: 64px 0;
             background: white;
@@ -284,6 +321,15 @@
                         <p>Process historical transactions in bulk using Anthropic's Batches API at 50% reduced cost.</p>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <section class="connect" id="connect">
+            <div class="container">
+                <h2>Connect Your Account</h2>
+                <p>Link your Gmail to automatically process Amazon order emails.</p>
+                <a href="https://us-central1-ynab-toolkit.cloudfunctions.net/oauth_start" class="btn btn-primary btn-large">Connect Gmail</a>
+                <p class="note">This grants read-only access to your emails and permission to send summary replies.</p>
             </div>
         </section>
 
