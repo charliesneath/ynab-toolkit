@@ -1,6 +1,6 @@
 # Terms of Service
 
-**YNAB Amazon Itemizer**
+**YNAB Toolkit**
 
 Last updated: January 28, 2026
 
@@ -10,7 +10,7 @@ By using YNAB Amazon Itemizer, you agree to these terms of service.
 
 ## Description of Service
 
-YNAB Amazon Itemizer is a personal automation tool that:
+YNAB Toolkit is a personal automation tool that:
 - Reads Amazon order confirmation emails from Gmail
 - Categorizes purchases using AI
 - Updates transactions in YNAB

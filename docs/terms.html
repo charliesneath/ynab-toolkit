@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service - YNAB Toolkit</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-600: #4b5563;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-800);
+            background: var(--gray-50);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        header {
+            background: white;
+            border-bottom: 1px solid var(--gray-100);
+            padding: 16px 0;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            text-decoration: none;
+        }
+
+        .nav-links a {
+            color: var(--gray-600);
+            text-decoration: none;
+            margin-left: 24px;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        main {
+            padding: 48px 0;
+        }
+
+        .content {
+            background: white;
+            padding: 48px;
+            border-radius: 12px;
+            border: 1px solid var(--gray-100);
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: var(--gray-900);
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: var(--gray-600);
+            margin-bottom: 32px;
+            font-size: 0.95rem;
+        }
+
+        h2 {
+            font-size: 1.25rem;
+            color: var(--gray-900);
+            margin-top: 32px;
+            margin-bottom: 12px;
+        }
+
+        p {
+            margin-bottom: 16px;
+            color: var(--gray-800);
+        }
+
+        ul {
+            margin-bottom: 16px;
+            padding-left: 24px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            color: var(--gray-800);
+        }
+
+        a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        strong {
+            color: var(--gray-900);
+        }
+
+        footer {
+            text-align: center;
+            padding: 48px 0;
+            color: var(--gray-600);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 640px) {
+            .content {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a href="/" class="logo">YNAB Toolkit</a>
+            <div class="nav-links">
+                <a href="https://github.com/charliesneath/ynab-toolkit">GitHub</a>
+                <a href="https://github.com/charliesneath/ynab-toolkit#quick-start">Docs</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="content">
+            <h1>Terms of Service</h1>
+            <p class="subtitle">Last updated: January 28, 2026</p>
+
+            <h2>Acceptance of Terms</h2>
+            <p>By using YNAB Toolkit, you agree to these terms of service.</p>
+
+            <h2>Description of Service</h2>
+            <p>YNAB Toolkit is a personal automation tool that:</p>
+            <ul>
+                <li>Reads Amazon order confirmation emails from Gmail</li>
+                <li>Categorizes purchases using AI</li>
+                <li>Updates transactions in YNAB</li>
+            </ul>
+
+            <h2>Use Restrictions</h2>
+            <p>This application is for personal, non-commercial use only. You agree not to:</p>
+            <ul>
+                <li>Use this service for any unlawful purpose</li>
+                <li>Attempt to gain unauthorized access to any systems</li>
+                <li>Share access credentials with others</li>
+            </ul>
+
+            <h2>Third-Party Services</h2>
+            <p>This application integrates with:</p>
+            <ul>
+                <li><strong>Google Gmail API</strong> - Subject to <a href="https://policies.google.com/terms">Google's Terms of Service</a></li>
+                <li><strong>YNAB API</strong> - Subject to <a href="https://www.ynab.com/terms">YNAB's Terms of Service</a></li>
+                <li><strong>Anthropic Claude API</strong> - Subject to <a href="https://www.anthropic.com/terms">Anthropic's Terms of Service</a></li>
+            </ul>
+            <p>You are responsible for compliance with these third-party terms.</p>
+
+            <h2>Disclaimer of Warranties</h2>
+            <p>This application is provided "as is" without warranty of any kind. The developer makes no guarantees regarding:</p>
+            <ul>
+                <li>Accuracy of categorizations</li>
+                <li>Availability or uptime</li>
+                <li>Compatibility with future API changes</li>
+            </ul>
+
+            <h2>Limitation of Liability</h2>
+            <p>The developer shall not be liable for any damages arising from:</p>
+            <ul>
+                <li>Use or inability to use the service</li>
+                <li>Incorrect categorizations or financial data</li>
+                <li>Loss of data or unauthorized access</li>
+            </ul>
+
+            <h2>Changes to Terms</h2>
+            <p>These terms may be updated at any time. Continued use constitutes acceptance of updated terms.</p>
+
+            <h2>Termination</h2>
+            <p>Access to this service may be terminated at any time without notice.</p>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p><a href="/">Home</a> &middot; <a href="/privacy.html">Privacy Policy</a> &middot; <a href="/terms.html">Terms of Service</a></p>
+        </div>
+    </footer>
+</body>
+</html>

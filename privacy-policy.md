@@ -1,12 +1,12 @@
 # Privacy Policy
 
-**YNAB Amazon Itemizer**
+**YNAB Toolkit**
 
 Last updated: January 28, 2026
 
 ## Overview
 
-YNAB Amazon Itemizer is a personal automation tool that categorizes Amazon purchases in YNAB (You Need A Budget). This application is for private, personal use only.
+YNAB Toolkit is a personal automation tool that categorizes Amazon purchases in YNAB (You Need A Budget). This application is for private, personal use only.
 
 ## Data Collection
 
